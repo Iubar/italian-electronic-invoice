@@ -3375,7 +3375,6 @@ public class FatturaPA
 	}
 	
 	
-	
 	public static void main(String[] args) 
 	{
 		FatturaPA fat = new  FatturaPA();
