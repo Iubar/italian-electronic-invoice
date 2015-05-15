@@ -1,30 +1,65 @@
 package it.iubar.fatturapa;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import java.io.File;
 import java.io.IOException;
 
-public class FatturaPaLettura {
+public class FatturaPaRead implements Runnable {
 
+	
 	private static void readXml() throws ParserConfigurationException, SAXException, IOException {
 		String path = "C:/Users/Matteo/workspace/italian-electronic-invoice/src/it/iubar/fatturapa/xml";
-		String fileName = path + "/IT01234567890_11001.xml";
-		File fXmlFile = new File(fileName);
+		String xmlFileName = path + "/IT01234567890_11001.xml";
+		String schemaFileName = path + "/fatturapa_v1.1.xsd";
+		File fXmlFile = new File(xmlFileName);
+		SchemaFactory xsf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		Schema xs = xsf.newSchema(new StreamSource(schemaFileName));
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		dbFactory.setNamespaceAware(true);
+		dbFactory.setIgnoringElementContentWhitespace(true); 
+		dbFactory.setSchema(xs);		
 		dbFactory.setValidating(true);            // and validating parser features
-		dbFactory.setIgnoringElementContentWhitespace(true);		
+		
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		
+		dBuilder.setErrorHandler(new ErrorHandler()
+		{
+		    @Override
+		    public void fatalError(SAXParseException exception) throws SAXException
+		    {
+		        System.err.println("fatalError: " + exception);
+		    }
+
+		    @Override
+		    public void error(SAXParseException exception) throws SAXException
+		    {
+		        System.err.println("error: " + exception);
+		    }
+
+		    @Override
+		    public void warning(SAXParseException exception) throws SAXException
+		    {
+		        System.err.println("warning: " + exception);
+		    }
+		});
+		
+		
 		Document doc = dBuilder.parse(fXmlFile);
 
 
@@ -34,8 +69,9 @@ public class FatturaPaLettura {
 
 		NodeList nList = doc.getElementsByTagName("IdTrasmittente");
 
-				// BUG: FatturaPaLettura.print(nList);
+				FatturaPaRead.print(nList);
 				
+				if(false){
 				
 				NodeList nList2 = doc.getElementsByTagName("IdTrasmittente");
 				Element eElement2 = (Element) nList2.item(0);
@@ -49,25 +85,28 @@ public class FatturaPaLettura {
 //				CedentePrestatore cedente = new CedentePrestatore();
 //				cedente.setDenominazione(s3);
 				
+				}
+				
 				
 	}
 
 
     private static void print(NodeList nList) {
+    	System.out.println("\nprint()\n");
     	for (int temp = 0; temp < nList.getLength(); temp++) {
    		 
 			Node nNode = nList.item(temp);
 			
-			System.out.println("nodi: " + nList.getLength());
+			System.out.println("nodo: " + (temp + 1)  + "/" + nList.getLength());
 			
-			String s = nNode.getNodeName() + ": " + FatturaPaLettura.toString(nNode);
+			String s = FatturaPaRead.toString(nNode);
 			System.out.println(s);
 			
 			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 								
 				NodeList nList2 = nNode.getChildNodes();
 				System.out.println("figli: " + nList2.getLength());
-				
+			 
 				print(nList2);
 				
 			}
@@ -78,10 +117,17 @@ public class FatturaPaLettura {
 	static String toString(Node node) {
         String s = "";
         if (node != null) {
-            switch (node.getNodeType()) {
-            case Node.TEXT_NODE:
+        	short type = node.getNodeType();
+        	if(type>0){
+            switch (type) {
 
-                s =  node.getNodeName() + ": " +  node.getNodeValue().trim();
+            case Node.TEXT_NODE:
+            	
+            	if(node.getNodeValue().trim().equals("")){
+            		s =  node.getNodeName().trim() + "/" + type + ": " +  node.getNodeValue().trim();
+            	}else{
+            		s =  node.getNodeValue().trim();
+            	}
 
                 break;
 
@@ -131,7 +177,7 @@ public class FatturaPaLettura {
             }
     
         }
-
+        }
         return s;
     }
 
@@ -228,15 +274,20 @@ public class FatturaPaLettura {
         }
     }
     
-	public static void main(String argv[]) {
-		try {
-			FatturaPaLettura.readXml();
-		} catch (Exception e) {
+ 
+
+	  @Override  
+	  public void run()   
+	  {  
+//		  System.out.println("This is currently running on a separate thread, " +  
+//		            "the id is: " + Thread.currentThread().getId());  
+		  try {
+			FatturaPaRead.readXml();
+		} catch (ParserConfigurationException | SAXException | IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-
+	  }
 	
 	
 	

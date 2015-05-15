@@ -44,7 +44,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class FatturaPA 
+public class FatturaPaWrite 
 {
 	private static final boolean DEBUG = true;
 	
@@ -3406,7 +3406,7 @@ public class FatturaPA
 	
 	public static void main(String[] args) 
 	{
-		FatturaPA fat = new  FatturaPA();
+		FatturaPaWrite fat = new  FatturaPaWrite();
 		
 		fat.start();
 	}
