@@ -1,3 +1,28 @@
+package it.iubar.fatturapa;
+
+import it.iubar.fatturapa.entities.Allegati;
+import it.iubar.fatturapa.entities.AltriDatiGestionali;
+import it.iubar.fatturapa.entities.Causale;
+import it.iubar.fatturapa.entities.CodcieArticolo;
+import it.iubar.fatturapa.entities.DatiCassaPrevidenziale;
+import it.iubar.fatturapa.entities.DatiContatto;
+import it.iubar.fatturapa.entities.DatiConvenzione;
+import it.iubar.fatturapa.entities.DatiDDT;
+import it.iubar.fatturapa.entities.DatiFattureCollegate;
+import it.iubar.fatturapa.entities.DatiOrdineAcquisto;
+import it.iubar.fatturapa.entities.DatiPagamento;
+import it.iubar.fatturapa.entities.DatiRicezione;
+import it.iubar.fatturapa.entities.DatiRiepilogo;
+import it.iubar.fatturapa.entities.DettaglioLinee;
+import it.iubar.fatturapa.entities.DettaglioPagamento;
+import it.iubar.fatturapa.entities.RiferimentoNumeroLineaCon;
+import it.iubar.fatturapa.entities.RiferimentoNumeroLineaConve;
+import it.iubar.fatturapa.entities.RiferimentoNumeroLineaDDT;
+import it.iubar.fatturapa.entities.RiferimentoNumeroLineaFatCol;
+import it.iubar.fatturapa.entities.RiferimentoNumeroLineaOrd;
+import it.iubar.fatturapa.entities.RiferimentoNumeroLineaRicez;
+import it.iubar.fatturapa.entities.ScontoMaggiorazione;
+import it.iubar.fatturapa.entities.ScontoMaggiorazioneBS;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,6 +36,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
  
+
+
+
+
 //import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -28,37 +57,37 @@ public class FatturaPA
 			builtDatiGenDoc(doc, elemDatiGen);
 			
 			if(isDatiOrdineAcquisto()){
-				List<DatiOrdineAcquisto> ordini = getListDatiOrdineAcquisto();
-				for(DatiOrdineAcquisto ordine : ordini){
-					builtDatiOrdAcq(doc, elemDatiGen);
+				List<DatiOrdineAcquisto> datOrdAcquisti = getListDatiOrdineAcquisto();
+				for(DatiOrdineAcquisto datOrdAcquisto : datOrdAcquisti){
+					builtDatiOrdAcq(doc, elemDatiGen, datOrdAcquisto);
 				}
 			}
 			
 			if(isDatiContatto()){
-				List<DatiContatto> ordini = getListDatiContatto();
-				for(DatiContatto ordine : ordini){
-					builtDatiContatto(doc, elemDatiGen);
+				List<DatiContatto> datContatti = getListDatiContatto();
+				for(DatiContatto datContatto : datContatti){
+					builtDatiContratto(doc, elemDatiGen, datContatto);
 				}
 			}
 			
 			if(isDatiConvenzione()){
-				List<DatiConvenzione> ordini = getListDatiConvenzione();
-				for(DatiConvenzione ordine : ordini){
-					builtDatiConvenzione(doc, elemDatiGen);
+				List<DatiConvenzione> datConvenzioni = getListDatiConvenzione();
+				for(DatiConvenzione datConvenzione : datConvenzioni){
+					builtDatiConvenzione(doc, elemDatiGen, datConvenzione);
 				}
 			}
 			
 			if(isDatiRicezione()){
-				List<DatiRicezione> ordini = getListDatiRicezione();
-				for(DatiRicezione ordine : ordini){
-					builtDatiRicezione(doc, elemDatiGen);
+				List<DatiRicezione> datRicezioni = getListDatiRicezione();
+				for(DatiRicezione datRicezione : datRicezioni){
+					builtDatiRicezione(doc, elemDatiGen, datRicezione);
 				}
 			}
 			
 			if(isDatiFattureCollegate()){
-				List<DatiFattureCollegate> ordini = getListDatiFattureCollegate();
-				for(DatiFattureCollegate ordine : ordini){
-					builtDatiFattureCollegate(doc, elemDatiGen);
+				List<DatiFattureCollegate> datFattCollegate = getListDatiFattureCollegate();
+				for(DatiFattureCollegate datFattCollegata : datFattCollegate){
+					builtDatiFattureCollegate(doc, elemDatiGen, datFattCollegata);
 				}
 			}
 			
@@ -74,9 +103,9 @@ public class FatturaPA
 			}
 			
 			if(isDatiDDT()){
-				List<DatiDDT> ordini = getListDatiDDT();
-				for(DatiDDT ordine : ordini){
-					builtDatiDDT(doc, elemDatiGen);
+				List<DatiDDT> datiDDT = getListDatiDDT();
+				for(DatiDDT datoDDT : datiDDT){
+					builtDatiDDT(doc, elemDatiGen, datoDDT);
 				}
 			}
 			
@@ -318,16 +347,16 @@ public class FatturaPA
 			}
 			
 			if(isDatiCassPrevid()){
-				List<DatiCassaPrevidenziale> ordini = getListDatiCassPrev();
-				for(DatiCassaPrevidenziale ordine : ordini){
-					builtDatiCassPrevid(doc, elemDatiGenDoc);
+				List<DatiCassaPrevidenziale> datiCasPreviden = getListDatiCassPrev();
+				for(DatiCassaPrevidenziale datoCasPreviden : datiCasPreviden){
+					builtDatiCassPrevid(doc, elemDatiGenDoc, datoCasPreviden);
 				}
 			}
 			 
 			if(isScontoMaggiorazione()){
-				List<ScontoMaggiorazione> ordini = getListScontoMaggiorazione();
-				for(ScontoMaggiorazione ordine : ordini){
-					builtScontoMAggiorazione(doc, elemDatiGenDoc);
+				List<ScontoMaggiorazione> sconti = getListScontoMaggiorazione();
+				for(ScontoMaggiorazione sconto : sconti){
+					builtScontoMAggiorazione(doc, elemDatiGenDoc, sconto);
 				}
 			}
 			
@@ -347,16 +376,16 @@ public class FatturaPA
 			}
 			
 			if(isCausale()){
-				List<Causale> ordini = getListCausale();
-				for(Causale ordine : ordini){
+				List<Causale> causali = getListCausale();
+				for(Causale causale : causali){
 					// Causale1 elements
 					Element elemCausale1 = doc.createElement("Causale"); 
-					elemCausale1.appendChild(doc.createTextNode("LA FATTURA FA RIFERIMENTO AD UNA OPERAZIONE AAAA BBBBBBBBBBBBBBBBBB CCC DDDDDDDDDDDDDDD E FFFFFFFFFFFFFFFFFFFF GGGGGGGGGG HHHHHHH II LLLLLLLLLLLLLLLLL MMM NNNNN OO PPPPPPPPPPP QQQQ RRRR SSSSSSSSSSSSSS"));
+					elemCausale1.appendChild(doc.createTextNode(causale.getCausale1())); 
 					elemDatiGenDoc.appendChild(elemCausale1);
 								
 					// Causale2 elements
 					Element elemCausale2 = doc.createElement("Causale"); 
-					elemCausale2.appendChild(doc.createTextNode("SEGUE DESCRIZIONE CAUSALE NEL CASO IN CUI NON SIANO STATI SUFFICIENTI 200 CARATTERI AAAAAAAAAAA BBBBBBBBBBBBBBBBB"));
+					elemCausale2.appendChild(doc.createTextNode(causale.getCausale2()));
 					elemDatiGenDoc.appendChild(elemCausale2);
 				}
 			}
@@ -538,7 +567,7 @@ public class FatturaPA
 			elemDatiBollo.appendChild(elemImportoBollo);
 	}
 	
-	private void builtDatiCassPrevid(Document doc, Element elemDatiGenDoc) throws ParserConfigurationException, TransformerException
+	private void builtDatiCassPrevid(Document doc, Element elemDatiGenDoc, DatiCassaPrevidenziale datoCasPreviden) throws ParserConfigurationException, TransformerException
 	{
 		// DatiCassaPrevidenziale elements
 		Element elemDatiCassPrevid = doc.createElement("DatiCassaPrevidenziale");
@@ -546,51 +575,51 @@ public class FatturaPA
 		
 			// TipoCassa elements
 			Element elemTipoCassa = doc.createElement("TipoCassa"); // questo elemento deve essere miglorato
-			elemTipoCassa.appendChild(doc.createTextNode("TR01"));
+			elemTipoCassa.appendChild(doc.createTextNode(datoCasPreviden.getTipoCassa())); 
 			elemDatiCassPrevid.appendChild(elemTipoCassa);
 				
 			// AlCassa elements
 			Element elemAlCassa = doc.createElement("AlCassa"); // questo elemento deve essere miglorato
-			elemAlCassa.appendChild(doc.createTextNode("506.74"));
+			elemAlCassa.appendChild(doc.createTextNode(datoCasPreviden.getAlCassa())); 
 			elemDatiCassPrevid.appendChild(elemAlCassa);
 			
 			// ImportoContriburoCassa elements
 			Element elemImpContrCassa = doc.createElement("ImportoContriburoCassa"); // questo elemento deve essere miglorato
-			elemImpContrCassa.appendChild(doc.createTextNode("TR01"));
+			elemImpContrCassa.appendChild(doc.createTextNode(datoCasPreviden.getImporContribCassa())); 
 			elemDatiCassPrevid.appendChild(elemImpContrCassa);
 			
 			if(isImponibileCassa()){
 				
 				// ImponibileCassa elements
 				Element elemImponCassa = doc.createElement("ImponibileCassa"); // questo elemento deve essere miglorato
-				elemImponCassa.appendChild(doc.createTextNode("1259.00"));
+				elemImponCassa.appendChild(doc.createTextNode(datoCasPreviden.getImponibCassa())); 
 				elemDatiCassPrevid.appendChild(elemImponCassa);
 			}
 			
 			// AliquotaIVA elements
 			Element elemAliquotaIVA = doc.createElement("AliquotaIVA"); // questo elemento deve essere miglorato
-			elemAliquotaIVA.appendChild(doc.createTextNode("22.00"));
+			elemAliquotaIVA.appendChild(doc.createTextNode(datoCasPreviden.getAliquotaIVA())); 
 			elemDatiCassPrevid.appendChild(elemAliquotaIVA);
 			
 			if(isRitenuta()){
 				//Ritenuta elements
 				//controllare grafico(PDF) perchè presenta un segno strano 
 				Element elemRitenuta = doc.createElement("Ritenuta"); // questo elemento deve essere miglorato
-				elemRitenuta.appendChild(doc.createTextNode("SI"));
+				elemRitenuta.appendChild(doc.createTextNode(datoCasPreviden.getRitenuta())); 
 				elemDatiCassPrevid.appendChild(elemRitenuta);				
 			}
 			
 			if(isNatura()){
 				//Natua elements		
 				Element elemNatura = doc.createElement("Natura"); // questo elemento deve essere miglorato
-				elemNatura.appendChild(doc.createTextNode("N1"));
+				elemNatura.appendChild(doc.createTextNode(datoCasPreviden.getNatura())); 
 				elemDatiCassPrevid.appendChild(elemNatura);	
 			}
 			
 			if(isRiferimentoAmministrazione()){
 				//RiferimentoAmministrazione elements		
 				Element elemRiferimentoAmministrazione = doc.createElement("RiferimentoAmministrazione"); // questo elemento deve essere miglorato
-				elemRiferimentoAmministrazione.appendChild(doc.createTextNode("N1"));
+				elemRiferimentoAmministrazione.appendChild(doc.createTextNode(datoCasPreviden.getRiferAmministra())); 
 				elemDatiCassPrevid.appendChild(elemRiferimentoAmministrazione);	
 			}
 	}
@@ -635,7 +664,7 @@ public class FatturaPA
 		return true;
 	}
 	
-	private void builtScontoMAggiorazione(Document doc, Element elemDatiGenDoc) throws ParserConfigurationException, TransformerException
+	private void builtScontoMAggiorazione(Document doc, Element elemDatiGenDoc, ScontoMaggiorazione sconto) throws ParserConfigurationException, TransformerException
 	{
 		// ScontoMaggiorazione elements
 		Element elemScontoMaggiorazione = doc.createElement("ScontoMaggiorazione");
@@ -643,20 +672,20 @@ public class FatturaPA
 		
 			// Tipo elements
 			Element elemTipo = doc.createElement("Tipo"); // questo elemento deve essere miglorato
-			elemTipo.appendChild(doc.createTextNode("SC"));
+			elemTipo.appendChild(doc.createTextNode(sconto.getElemTipo())); 
 			elemScontoMaggiorazione.appendChild(elemTipo);
 			
 			if(isPercentuale()){
 				// Percentuale elements
 				Element elemPercentuale = doc.createElement("Percentuale"); // questo elemento deve essere miglorato
-				elemPercentuale.appendChild(doc.createTextNode("17.50"));
+				elemPercentuale.appendChild(doc.createTextNode(sconto.getPercentuale())); 
 				elemScontoMaggiorazione.appendChild(elemPercentuale);
 			}
 			
 			if(isImporto()){
 				// Importo elements
 				Element elemImporto = doc.createElement("Importo"); // questo elemento deve essere miglorato
-				elemImporto.appendChild(doc.createTextNode("1054"));
+				elemImporto.appendChild(doc.createTextNode(sconto.getImporto())); 
 				elemScontoMaggiorazione.appendChild(elemImporto);
 			}
 	}
@@ -681,7 +710,7 @@ public class FatturaPA
 		return true;
 	}
 	
-	private void builtDatiOrdAcq(Document doc, Element elemDatiGen) throws ParserConfigurationException, TransformerException
+	private void builtDatiOrdAcq(Document doc, Element elemDatiGen, DatiOrdineAcquisto datOrdAcquisto) throws ParserConfigurationException, TransformerException
 	{
 
 		// DatiOrdineAcquisto elements
@@ -700,41 +729,41 @@ public class FatturaPA
 			
 			// IdDocumento elements
 			Element elemIdDoc = doc.createElement("IdDocumento"); // questo elemento deve essere miglorato
-			elemIdDoc.appendChild(doc.createTextNode("66685amsda"));
+			elemIdDoc.appendChild(doc.createTextNode(datOrdAcquisto.getIdDocumento())); 
 			ElemDatiOrdAcq.appendChild(elemIdDoc);
 			
 			if(isDataOrd()){
 				// Data elements
 				Element elemData = doc.createElement("Data"); // questo elemento deve essere miglorato
-				elemData.appendChild(doc.createTextNode("2015-03-20"));
+				elemData.appendChild(doc.createTextNode(datOrdAcquisto.getData())); 
 				ElemDatiOrdAcq.appendChild(elemData);
 			}
 			
 			if(isNumItemOrd()){
 				// NumItem elements
 				Element elemNumItem = doc.createElement("NumItem"); // questo elemento deve essere miglorato
-				elemNumItem.appendChild(doc.createTextNode("1"));
+				elemNumItem.appendChild(doc.createTextNode(datOrdAcquisto.getNumItem()));  
 				ElemDatiOrdAcq.appendChild(elemNumItem);
 			}
 			
 			if(isCodiceCommessaConvenzioneOrd()){
 				// CodiceCommessaConvenzione elements
-				Element elemCodCUP = doc.createElement("CodiceCommessaConvenzione"); // questo elemento deve essere miglorato
-				elemCodCUP.appendChild(doc.createTextNode("123abc"));
-				ElemDatiOrdAcq.appendChild(elemCodCUP);
+				Element elemCodComConven = doc.createElement("CodiceCommessaConvenzione"); // questo elemento deve essere miglorato
+				elemCodComConven.appendChild(doc.createTextNode(datOrdAcquisto.getCodComConven())); 
+				ElemDatiOrdAcq.appendChild(elemCodComConven);
 			}
 			
 			if(isCodiceCUPOrd()){
 				// CodiceCUP elements
 				Element elemCodCUP = doc.createElement("CodiceCUP"); // questo elemento deve essere miglorato
-				elemCodCUP.appendChild(doc.createTextNode("123abc"));
+				elemCodCUP.appendChild(doc.createTextNode(datOrdAcquisto.getCodCUP())); 
 				ElemDatiOrdAcq.appendChild(elemCodCUP);
 			}
 			
 			if(isCodiceCIGOrd()){
 				// CodiceCIG elements
 				Element elemCodCIG = doc.createElement("CodiceCIG"); // questo elemento deve essere miglorato
-				elemCodCIG.appendChild(doc.createTextNode("456def"));
+				elemCodCIG.appendChild(doc.createTextNode(datOrdAcquisto.getCodCIG()));
 				ElemDatiOrdAcq.appendChild(elemCodCIG);
 			}	
 	}
@@ -814,7 +843,7 @@ public class FatturaPA
 		return ordini;
 	}
 	
-	private void builtDatiContatto(Document doc, Element elemDatiGen) throws ParserConfigurationException, TransformerException
+	private void builtDatiContratto(Document doc, Element elemDatiGen, DatiContatto datContatto) throws ParserConfigurationException, TransformerException // TODO: rinomiknare DatiContatto in DatiContratto
 	{
 		// DatiContratto elements
 		Element elemDatiCont = doc.createElement("DatiContratto");
@@ -832,41 +861,41 @@ public class FatturaPA
 			
 			// IdDocumento elements
 			Element elemIdDoc = doc.createElement("IdDocumento"); // questo elemento deve essere miglorato
-			elemIdDoc.appendChild(doc.createTextNode("66685amsda"));
+			elemIdDoc.appendChild(doc.createTextNode(datContatto.getIdDocumento())); 
 			elemDatiCont.appendChild(elemIdDoc);
 			
 			if(isDataCon()){
 				// Data elements
 				Element elemData = doc.createElement("Data"); // questo elemento deve essere miglorato
-				elemData.appendChild(doc.createTextNode("2015-03-20"));
+				elemData.appendChild(doc.createTextNode(datContatto.getData())); 
 				elemDatiCont.appendChild(elemData);
 			}
 			
 			if(isNumItemCon()){
 				// NumItem elements
 				Element elemNumItem = doc.createElement("NumItem"); // questo elemento deve essere miglorato
-				elemNumItem.appendChild(doc.createTextNode("1"));
+				elemNumItem.appendChild(doc.createTextNode(datContatto.getNumItem())); 
 				elemDatiCont.appendChild(elemNumItem);
 			}
 			
 			if(isCodiceCommessaConvenzioneCon()){
 				// CodiceCommessaConvenzione elements
-				Element elemCodCUP = doc.createElement("CodiceCommessaConvenzione"); // questo elemento deve essere miglorato
-				elemCodCUP.appendChild(doc.createTextNode("123abc"));
-				elemDatiCont.appendChild(elemCodCUP);
+				Element elemCodComConven = doc.createElement("CodiceCommessaConvenzione"); // questo elemento deve essere miglorato
+				elemCodComConven.appendChild(doc.createTextNode(datContatto.getCodComConven())); 
+				elemDatiCont.appendChild(elemCodComConven);
 			}
 			
 			if(isCodiceCUPCon()){
 				// CodiceCUP elements
 				Element elemCodCUP = doc.createElement("CodiceCUP"); // questo elemento deve essere miglorato
-				elemCodCUP.appendChild(doc.createTextNode("123abc"));
+				elemCodCUP.appendChild(doc.createTextNode(datContatto.getCodCUP())); 
 				elemDatiCont.appendChild(elemCodCUP);
 			}
 			
 			if(isCodiceCIGCon()){
 				// CodiceCIG elements
 				Element elemCodCIG = doc.createElement("CodiceCIG"); // questo elemento deve essere miglorato
-				elemCodCIG.appendChild(doc.createTextNode("456def"));
+				elemCodCIG.appendChild(doc.createTextNode(datContatto.getCodCIG())); 
 				elemDatiCont.appendChild(elemCodCIG);
 			}		
 	}
@@ -946,7 +975,7 @@ public class FatturaPA
 		return ordini;
 	}
 	
-	private void builtDatiConvenzione(Document doc, Element elemDatiGen) throws ParserConfigurationException, TransformerException
+	private void builtDatiConvenzione(Document doc, Element elemDatiGen, DatiConvenzione datConvenzione) throws ParserConfigurationException, TransformerException
 	{
 		// DatiConvenzione elements
 		Element elemDatiConven = doc.createElement("DatiConvenzione");
@@ -964,41 +993,41 @@ public class FatturaPA
 			
 			// IdDocumento elements
 			Element elemIdDoc = doc.createElement("IdDocumento"); // questo elemento deve essere miglorato
-			elemIdDoc.appendChild(doc.createTextNode("66685amsda"));
+			elemIdDoc.appendChild(doc.createTextNode(datConvenzione.getIdDocumento())); 
 			elemDatiConven.appendChild(elemIdDoc);
 			
 			if(isDataConve()){
 				// Data elements
 				Element elemData = doc.createElement("Data"); // questo elemento deve essere miglorato
-				elemData.appendChild(doc.createTextNode("2015-03-20"));
+				elemData.appendChild(doc.createTextNode(datConvenzione.getData())); 
 				elemDatiConven.appendChild(elemData);
 			}
 			
 			if(isNumItemConve()){
 				// NumItem elements
 				Element elemNumItem = doc.createElement("NumItem"); // questo elemento deve essere miglorato
-				elemNumItem.appendChild(doc.createTextNode("1"));
+				elemNumItem.appendChild(doc.createTextNode(datConvenzione.getNumItem())); 
 				elemDatiConven.appendChild(elemNumItem);
 			}
 			
 			if(isCodiceCommessaConvenzioneConve()){
 				// CodiceCommessaConvenzione elements
-				Element elemCodCUP = doc.createElement("CodiceCommessaConvenzione"); // questo elemento deve essere miglorato
-				elemCodCUP.appendChild(doc.createTextNode("123abc"));
-				elemDatiConven.appendChild(elemCodCUP);
+				Element elemCodComConven = doc.createElement("CodiceCommessaConvenzione"); // questo elemento deve essere miglorato
+				elemCodComConven.appendChild(doc.createTextNode(datConvenzione.getCodComConven())); 
+				elemDatiConven.appendChild(elemCodComConven);
 			}
 			
 			if(isCodiceCUPConve()){
 				// CodiceCUP elements
 				Element elemCodCUP = doc.createElement("CodiceCUP"); // questo elemento deve essere miglorato
-				elemCodCUP.appendChild(doc.createTextNode("123abc"));
+				elemCodCUP.appendChild(doc.createTextNode(datConvenzione.getCodCUP())); 
 				elemDatiConven.appendChild(elemCodCUP);
 			}
 			
 			if(isCodiceCIGConve()){
 				// CodiceCIG elements
 				Element elemCodCIG = doc.createElement("CodiceCIG"); // questo elemento deve essere miglorato
-				elemCodCIG.appendChild(doc.createTextNode("456def"));
+				elemCodCIG.appendChild(doc.createTextNode(datConvenzione.getCodCIG())); 
 				elemDatiConven.appendChild(elemCodCIG);
 			}
 	}
@@ -1078,7 +1107,7 @@ public class FatturaPA
 		return ordini;
 	}
 	
-	private void builtDatiRicezione(Document doc, Element elemDatiGen) throws ParserConfigurationException, TransformerException
+	private void builtDatiRicezione(Document doc, Element elemDatiGen, DatiRicezione datRicezione) throws ParserConfigurationException, TransformerException
 	{
 		// DatiRicezione elements
 		Element elemDatiRicezione = doc.createElement("DatiRicezione");
@@ -1096,41 +1125,41 @@ public class FatturaPA
 			
 			// IdDocumento elements
 			Element elemIdDoc = doc.createElement("IdDocumento"); // questo elemento deve essere miglorato
-			elemIdDoc.appendChild(doc.createTextNode("66685amsda"));
+			elemIdDoc.appendChild(doc.createTextNode(datRicezione.getIdDocumento())); 
 			elemDatiRicezione.appendChild(elemIdDoc);
 			
 			if(isDataRicez()){
 				// Data elements
 				Element elemData = doc.createElement("Data"); // questo elemento deve essere miglorato
-				elemData.appendChild(doc.createTextNode("2015-03-20"));
+				elemData.appendChild(doc.createTextNode(datRicezione.getData())); 
 				elemDatiRicezione.appendChild(elemData);
 			}
 			
 			if(isNumItemRicez()){
 				// NumItem elements
 				Element elemNumItem = doc.createElement("NumItem"); // questo elemento deve essere miglorato
-				elemNumItem.appendChild(doc.createTextNode("1"));
+				elemNumItem.appendChild(doc.createTextNode(datRicezione.getNumItem())); 
 				elemDatiRicezione.appendChild(elemNumItem);
 			}
 			
 			if(isCodiceCommessaConvenzioneRicez()){
 				// CodiceCommessaConvenzione elements
-				Element elemCodCUP = doc.createElement("CodiceCommessaConvenzione"); // questo elemento deve essere miglorato
-				elemCodCUP.appendChild(doc.createTextNode("123abc"));
-				elemDatiRicezione.appendChild(elemCodCUP);
+				Element elemCodComConven = doc.createElement("CodiceCommessaConvenzione"); // questo elemento deve essere miglorato
+				elemCodComConven.appendChild(doc.createTextNode(datRicezione.getCodComConven())); 
+				elemDatiRicezione.appendChild(elemCodComConven);
 			}
 			
 			if(isCodiceCUPRicez()){
 				// CodiceCUP elements
 				Element elemCodCUP = doc.createElement("CodiceCUP"); // questo elemento deve essere miglorato
-				elemCodCUP.appendChild(doc.createTextNode("123abc"));
+				elemCodCUP.appendChild(doc.createTextNode(datRicezione.getCodCUP())); 
 				elemDatiRicezione.appendChild(elemCodCUP);
 			}
 			
 			if(isCodiceCIGRicez()){
 				// CodiceCIG elements
 				Element elemCodCIG = doc.createElement("CodiceCIG"); // questo elemento deve essere miglorato
-				elemCodCIG.appendChild(doc.createTextNode("456def"));
+				elemCodCIG.appendChild(doc.createTextNode(datRicezione.getCodCIG())); 
 				elemDatiRicezione.appendChild(elemCodCIG);
 			}
 	}
@@ -1210,7 +1239,7 @@ public class FatturaPA
 		return ordini;
 	}
 	
-	private void builtDatiFattureCollegate(Document doc, Element elemDatiGen) throws ParserConfigurationException, TransformerException
+	private void builtDatiFattureCollegate(Document doc, Element elemDatiGen, DatiFattureCollegate datFattCollegata) throws ParserConfigurationException, TransformerException
 	{
 		// DatiFattureCollegate elements
 		Element elemDatiFattureCollegate = doc.createElement("FattureCollegate");
@@ -1228,41 +1257,41 @@ public class FatturaPA
 			
 			// IdDocumento elements
 			Element elemIdDoc = doc.createElement("IdDocumento"); // questo elemento deve essere miglorato
-			elemIdDoc.appendChild(doc.createTextNode("66685amsda"));
+			elemIdDoc.appendChild(doc.createTextNode(datFattCollegata.getIdDocumento())); 
 			elemDatiFattureCollegate.appendChild(elemIdDoc);
 			
 			if(isDataFatCol()){
 				// Data elements
 				Element elemData = doc.createElement("Data"); // questo elemento deve essere miglorato
-				elemData.appendChild(doc.createTextNode("2015-03-20"));
+				elemData.appendChild(doc.createTextNode(datFattCollegata.getData())); 
 				elemDatiFattureCollegate.appendChild(elemData);
 			}
 			
 			if(isNumItemFatCol()){
 				// NumItem elements
 				Element elemNumItem = doc.createElement("NumItem"); // questo elemento deve essere miglorato
-				elemNumItem.appendChild(doc.createTextNode("1"));
+				elemNumItem.appendChild(doc.createTextNode(datFattCollegata.getNumItem())); 
 				elemDatiFattureCollegate.appendChild(elemNumItem);
 			}
 			
 			if(isCodiceCommessaConvenzioneFatCol()){
 				// CodiceCommessaConvenzione elements
-				Element elemCodCUP = doc.createElement("CodiceCommessaConvenzione"); // questo elemento deve essere miglorato
-				elemCodCUP.appendChild(doc.createTextNode("123abc"));
-				elemDatiFattureCollegate.appendChild(elemCodCUP);
+				Element elemCodComConven = doc.createElement("CodiceCommessaConvenzione"); // questo elemento deve essere miglorato
+				elemCodComConven.appendChild(doc.createTextNode(datFattCollegata.getCodComConven())); 
+				elemDatiFattureCollegate.appendChild(elemCodComConven);
 			}
 			
 			if(isCodiceCUPFatCol()){
 				// CodiceCUP elements
 				Element elemCodCUP = doc.createElement("CodiceCUP"); // questo elemento deve essere miglorato
-				elemCodCUP.appendChild(doc.createTextNode("123abc"));
+				elemCodCUP.appendChild(doc.createTextNode(datFattCollegata.getCodCUP())); 
 				elemDatiFattureCollegate.appendChild(elemCodCUP);
 			}
 			
 			if(isCodiceCIGFatCol()){
 				// CodiceCIG elements
 				Element elemCodCIG = doc.createElement("CodiceCIG"); // questo elemento deve essere miglorato
-				elemCodCIG.appendChild(doc.createTextNode("456def"));
+				elemCodCIG.appendChild(doc.createTextNode(datFattCollegata.getCIG())); 
 				elemDatiFattureCollegate.appendChild(elemCodCIG);
 			}
 	}
@@ -1342,7 +1371,7 @@ public class FatturaPA
 		return ordini;
 	}
 	
-	private void builtDatiDDT(Document doc, Element elemDatiGen) throws ParserConfigurationException, TransformerException
+	private void builtDatiDDT(Document doc, Element elemDatiGen, DatiDDT datoDDT) throws ParserConfigurationException, TransformerException
 	{
 		// DatiDDT elements
 		Element elemDatiDDT = doc.createElement("DatiDDT");
@@ -1350,12 +1379,12 @@ public class FatturaPA
 			
 			// NumeroDDT  elements
 			Element elemNumeroDDT = doc.createElement("NumeroDDT"); // questo elemento deve essere miglorato
-			elemNumeroDDT.appendChild(doc.createTextNode("advfbad"));
+			elemNumeroDDT.appendChild(doc.createTextNode(datoDDT.getNumeroDDT())); 
 			elemDatiDDT.appendChild(elemNumeroDDT);
 			
 			// DataDDT  elements
 			Element elemDataDDT = doc.createElement("DataDDT"); // questo elemento deve essere miglorato
-			elemDataDDT.appendChild(doc.createTextNode("2015-03-20"));
+			elemDataDDT.appendChild(doc.createTextNode(datoDDT.getDataDDT())); 
 			elemDatiDDT.appendChild(elemDataDDT);
 			
 			if(isRiferimentoNumeroLineaDDT()){
