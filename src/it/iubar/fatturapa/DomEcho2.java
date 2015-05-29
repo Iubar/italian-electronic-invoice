@@ -109,6 +109,4 @@ public class DomEcho2 extends DOMEcho {
 		Node node = nodes.item(0);
 		super.printlnCommon(node);
 	}
-	
-	
 }

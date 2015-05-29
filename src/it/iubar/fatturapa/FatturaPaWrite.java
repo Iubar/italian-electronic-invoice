@@ -47,6 +47,12 @@ import org.w3c.dom.Element;
 public class FatturaPaWrite 
 {
 	private static final boolean DEBUG = true;
+	private String xmlFileNameOut;
+	
+	public FatturaPaWrite(String xmlFileNameOut)
+	{
+		this.xmlFileNameOut = xmlFileNameOut;
+	}
 	
 	private void builtDatiGenereali(Document doc, Element elemFatEletBody) throws ParserConfigurationException, TransformerException
 	{
@@ -2943,8 +2949,10 @@ public class FatturaPaWrite
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		DOMSource source = new DOMSource(doc);
-		StreamResult result = new StreamResult(new File("file.xml"));
-		//result = new StreamResult(System.out); 
+		StreamResult result = new StreamResult(new File(xmlFileNameOut));
+		//result = new StreamResult(System.out);
+		
+		System.out.println("\n*** SCRIVO IL DOCUMENTO IN " + this.xmlFileNameOut + " ***");
 		
 		transformer.transform(source, result);
 	}
@@ -3401,13 +3409,5 @@ public class FatturaPaWrite
 		catch(TransformerException tfe){
 			tfe.printStackTrace();}
 		catch(Exception exc){}
-	}
-	
-	
-	public static void main(String[] args) 
-	{
-		FatturaPaWrite fat = new  FatturaPaWrite();
-		
-		fat.start();
 	}
 }

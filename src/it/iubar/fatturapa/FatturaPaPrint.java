@@ -21,10 +21,8 @@ import org.xml.sax.SAXParseException;
 import java.io.File;
 import java.io.IOException;
 
-public class FatturaPaPrint {
-
-	
-
+public class FatturaPaPrint 
+{
 	private static int livello = -1;
 
 	private static void readXml() throws ParserConfigurationException, SAXException, IOException {
@@ -178,18 +176,13 @@ public class FatturaPaPrint {
 
     public void print()   
     {  
-  
-    	try {
+    	try 
+    	{
     		FatturaPaPrint.readXml();
     	} catch (ParserConfigurationException | SAXException | IOException e) {
     		e.printStackTrace();
     	}
- 
-
     }
-	
-
-
 }
 
 

@@ -17,6 +17,7 @@ public class Main
 	final static public String XML_PATH = "C:/Users/Matteo/workspace/italian-electronic-invoice/src/it/iubar/fatturapa/xml";
 	static public String xmlFileName = null;
 	static public String schemaFileName = null;
+	static public String xmlFileNameOut = null;
 	public static String schemaUrl = "http://localhost/fatturapa_v1.1.xsd";
 	
 	public static void main (String[] args)  
@@ -24,27 +25,51 @@ public class Main
 //		System.out.println("This is currently running on the main thread, " +  
 //				"the id is: " + Thread.currentThread().getId());
 
-		
-		xmlFileName = XML_PATH + "/examples/IT01234567890_11001.xml";		
+		xmlFileName = XML_PATH + "/examples/IT01234567890_11001.xml";			
 		schemaFileName = XML_PATH + "/fatturapa_v1.1.xsd";
-		 
+		xmlFileNameOut = XML_PATH + "/prova.xml";
+		
+		System.out.println("");
+		System.out.println("*** FILE XML " + Main.xmlFileName + " ***");
+		System.out.println("");
+		
 		///////////////////////////////
+		
+		System.out.println("");
+		System.out.println("*** STAMPO IL CONTENUTO DEL DOCUMENTO (uso la classe FatturaPaPrint) ***");
+		System.out.println("");
 		
 		FatturaPaPrint paPrint = new FatturaPaPrint();  
 		paPrint.print();
 		///////////////////////////////
 		
+		System.out.println("");
+		System.out.println("*** FILE XSD " + Main.schemaFileName + " ***");
+		System.out.println("");
+		System.out.println("*** VALIDO IL DOCUMENTO ***");
+		System.out.println("");
+		
 		FatturaPaValidator worker2 = new FatturaPaValidator();
 		Thread thread2 = new Thread(worker2);
 		thread2.start();
 		wait(thread2);
+		
 		///////////////////////////////
+		
+		System.out.println("");
+		System.out.println("*** LEGGO IL CONTENUTO DEL DOCUMENTO (uso la classe DomDocument) ***");
+		System.out.println("");
 		
 		FatturaPaParser worker3 = new FatturaPaParser();		
 		Thread thread3 = new Thread(worker3);
 		thread3.start();
 		wait(thread3);
+		
 		///////////////////////////////
+		
+		System.out.println("");
+		System.out.println("*** STAMPO IL CONTENUTO DEL DOCUMENTO (uso la classe DomEcho2) ***");
+		System.out.println("");
 		
 		DomEcho2 d = null;
 		try {
@@ -57,6 +82,10 @@ public class Main
 	    
 	    ///////////////////////////////
 	    
+		System.out.println("");
+		System.out.println("*** LEGGO IL CONTENUTO DEL DOCUMENTO (uso la classe SAXParser) ***");
+		System.out.println("");
+		
 		try {
 			FatturaPaValidator.saxParser();
 			System.out.println("ok!");
@@ -66,15 +95,27 @@ public class Main
 		
 	    ///////////////////////////////
  
-		FatturaPaWrite w = new FatturaPaWrite();
+		System.out.println("");
+		System.out.println("*** SCRIVO IL DOCUMENTO ***");
+		System.out.println("");
+		
+		FatturaPaWrite w = new FatturaPaWrite(xmlFileNameOut);
 		w.start();
 	    ///////////////////////////////
 		
+		if(false)
+		{
+		System.out.println("");
+		System.out.println("*** RESTful API CLIENT  ***");
+		System.out.println("");
+		
 		FatturaPaClient paClient = new FatturaPaClient();
-		paClient.readData();		
+		paClient.readData();
+		}
 	    ///////////////////////////////
 	}
-
+	
+	
 	private static void wait(Thread thread) {
 		System.out.println("Sto elaborando...");
 		int max = 60; // tempo massimo di attesa: 60 loop da mezzo secondo (500 ms), ovvero 30 secondi
@@ -92,6 +133,4 @@ public class Main
 		}
 		System.out.println("");
 	}
-
-
 } 
