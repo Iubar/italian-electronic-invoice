@@ -14,20 +14,21 @@ public class Main
 	final static public String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
 	final static public String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
 	
-	final static public String XML_PATH = "C:/Users/Matteo/workspace/italian-electronic-invoice/src/it/iubar/fatturapa/xml";
+	static public String xmlPath = null;
 	static public String xmlFileName = null;
 	static public String schemaFileName = null;
 	static public String xmlFileNameOut = null;
-	public static String schemaUrl = "http://localhost/fatturapa_v1.1.xsd";
+	public static String schemaUrl = "http://127.0.0.1/fatturapa_v1.1.xsd";
 	
 	public static void main (String[] args)  
 	{  
 //		System.out.println("This is currently running on the main thread, " +  
 //				"the id is: " + Thread.currentThread().getId());
 
-		xmlFileName = XML_PATH + "/examples/IT01234567890_11001.xml";			
-		schemaFileName = XML_PATH + "/fatturapa_v1.1.xsd";
-		xmlFileNameOut = XML_PATH + "/prova.xml";
+		xmlPath = System.getProperty("user.home") + "/workspace/italian-electronic-invoice/src/it/iubar/fatturapa/xml";
+		xmlFileName = xmlPath + "/examples/IT01234567890_11001.xml";			
+		schemaFileName = xmlPath + "/fatturapa_v1.1.xsd";
+		xmlFileNameOut = xmlPath + "/prova.xml";
 		
 		System.out.println("");
 		System.out.println("*** FILE XML " + Main.xmlFileName + " ***");
