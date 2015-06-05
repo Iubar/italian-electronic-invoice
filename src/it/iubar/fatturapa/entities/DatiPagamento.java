@@ -15,6 +15,14 @@ public class DatiPagamento {
 		this.ImportoPagamento = ImportoPagamento;	
 	}
 	
+	public DatiPagamento(){
+		
+		this.DataScadenzaPagamento = "";
+		this.DatiPagamento = "";
+		this.ModalitaPagamento = "";
+		this.ImportoPagamento = "";	
+	}
+
 	public String getDatiPagamento() {
 		return DatiPagamento;
 	}

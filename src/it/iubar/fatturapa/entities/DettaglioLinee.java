@@ -19,6 +19,15 @@ public class DettaglioLinee {
 		this.Quantita = Quantita;
 	}
 	
+	public DettaglioLinee(){
+		
+		this.AliquotaIVA = "";
+		this.Descrizione = "";
+		this.NumeroLinea = "";
+		this.PrezzoTotale = "";
+		this.PrezzoUnitario = "";
+		this.Quantita = "";
+	}
 	
 	public String getNumeroLinea() {
 		return NumeroLinea;
