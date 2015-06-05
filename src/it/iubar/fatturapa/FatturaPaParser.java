@@ -13,11 +13,124 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import it.iubar.fatturapa.entities.*;
+
 public class FatturaPaParser implements Runnable {
 
 	public static void parser(Document doc) throws ParserConfigurationException, SAXException, IOException{
 
-			
+		IdTrasmittente idTrasmittetne = new IdTrasmittente();
+		
+		NodeList nListH1 = doc.getElementsByTagName("IdTrasmittente");
+		Element eElementH1 = (Element) nListH1.item(0);
+		idTrasmittetne.setIdPaese(eElementH1.getElementsByTagName("IdPaese").item(0).getTextContent());
+		System.out.println(idTrasmittetne.getIdPaese());
+		
+		NodeList nListH2 = doc.getElementsByTagName("IdTrasmittente");
+		Element eElementH2 = (Element) nListH2.item(0);
+		idTrasmittetne.setIdCodice(eElementH2.getElementsByTagName("IdCodice").item(0).getTextContent());
+		System.out.println(idTrasmittetne.getIdCodice());
+		
+		
+		DatiTrasmissione datTrasmis = new DatiTrasmissione();
+		datTrasmis.setId(idTrasmittetne);
+		
+		NodeList nListH3 = doc.getElementsByTagName("DatiTrasmissione");
+		Element eElementH3 = (Element) nListH3.item(0);
+		datTrasmis.setProgressivoInvio(eElementH3.getElementsByTagName("ProgressivoInvio").item(0).getTextContent());
+		System.out.println(datTrasmis.getProgressivoInvio());
+		
+		NodeList nListH5 = doc.getElementsByTagName("DatiTrasmissione");
+		Element eElementH5 = (Element) nListH5.item(0);
+		datTrasmis.setFormatoTrasmissione(eElementH5.getElementsByTagName("FormatoTrasmissione").item(0).getTextContent());
+		System.out.println(datTrasmis.getFormatoTrasmissione());
+		
+		NodeList nListH4 = doc.getElementsByTagName("DatiTrasmissione");
+		Element eElementH4 = (Element) nListH4.item(0);
+		datTrasmis.setCodiceDestinatario(eElementH4.getElementsByTagName("CodiceDestinatario").item(0).getTextContent());
+		System.out.println(datTrasmis.getCodiceDestinatario());
+		
+		
+		NodeList nListH6 = doc.getElementsByTagName("CedentePrestatore");
+		Element eElementH6 = (Element) nListH6.item(0);
+		String sH6 = eElementH6.getElementsByTagName("IdPaese").item(0).getTextContent();
+		System.out.println(sH6);
+		
+		NodeList nListH7 = doc.getElementsByTagName("CedentePrestatore");
+		Element eElementH7 = (Element) nListH7.item(0);
+		String sH7 = eElementH7.getElementsByTagName("IdCodice").item(0).getTextContent();
+		System.out.println(sH7);
+		
+		NodeList nListH8 = doc.getElementsByTagName("CedentePrestatore");
+		Element eElementH8 = (Element) nListH8.item(0);
+		String sH8 = eElementH8.getElementsByTagName("Denominazione").item(0).getTextContent();
+		System.out.println(sH8);
+		
+		NodeList nListH9 = doc.getElementsByTagName("CedentePrestatore");
+		Element eElementH9 = (Element) nListH9.item(0);
+		String sH9 = eElementH9.getElementsByTagName("Indirizzo").item(0).getTextContent();
+		System.out.println(sH9);
+		
+		NodeList nListH10 = doc.getElementsByTagName("CedentePrestatore");
+		Element eElementH10 = (Element) nListH10.item(0);
+		String sH10 = eElementH10.getElementsByTagName("CAP").item(0).getTextContent();
+		System.out.println(sH10);
+		
+		NodeList nListH11 = doc.getElementsByTagName("CedentePrestatore");
+		Element eElementH11 = (Element) nListH11.item(0);
+		String sH11 = eElementH11.getElementsByTagName("Comune").item(0).getTextContent();
+		System.out.println(sH11);
+		
+		NodeList nListH12 = doc.getElementsByTagName("CedentePrestatore");
+		Element eElementH12 = (Element) nListH12.item(0);
+		String sH12 = eElementH12.getElementsByTagName("Provincia").item(0).getTextContent();
+		System.out.println(sH12);
+		
+		NodeList nListH13 = doc.getElementsByTagName("CedentePrestatore");
+		Element eElementH13 = (Element) nListH13.item(0);
+		String sH13 = eElementH13.getElementsByTagName("Nazione").item(0).getTextContent();
+		System.out.println(sH13);
+		
+		////////////////////////////////
+		
+		NodeList nListH14 = doc.getElementsByTagName("CessionarioCommittente");
+		Element eElementH14 = (Element) nListH14.item(0);
+		String sH14 = eElementH14.getElementsByTagName("CodiceFiscale").item(0).getTextContent();
+		System.out.println(sH14);
+		
+		NodeList nListH15 = doc.getElementsByTagName("CessionarioCommittente");
+		Element eElementH15 = (Element) nListH15.item(0);
+		String sH15 = eElementH15.getElementsByTagName("Denominazione").item(0).getTextContent();
+		System.out.println(sH15);
+		
+		NodeList nListH16 = doc.getElementsByTagName("CessionarioCommittente");
+		Element eElementH16 = (Element) nListH16.item(0);
+		String sH16 = eElementH16.getElementsByTagName("Indirizzo").item(0).getTextContent();
+		System.out.println(sH16);
+		
+		NodeList nListH17 = doc.getElementsByTagName("CessionarioCommittente");
+		Element eElementH17 = (Element) nListH17.item(0);
+		String sH17 = eElementH17.getElementsByTagName("CAP").item(0).getTextContent();
+		System.out.println(sH17);
+		
+		NodeList nListH18 = doc.getElementsByTagName("CessionarioCommittente");
+		Element eElementH18 = (Element) nListH18.item(0);
+		String sH18 = eElementH18.getElementsByTagName("Comune").item(0).getTextContent();
+		System.out.println(sH18);
+		
+		NodeList nListH19 = doc.getElementsByTagName("CessionarioCommittente");
+		Element eElementH19 = (Element) nListH19.item(0);
+		String sH19 = eElementH19.getElementsByTagName("Provincia").item(0).getTextContent();
+		System.out.println(sH19);
+		
+		NodeList nListH20 = doc.getElementsByTagName("CessionarioCommittente");
+		Element eElementH20 = (Element) nListH20.item(0);
+		String sH20 = eElementH20.getElementsByTagName("Nazione").item(0).getTextContent();
+		System.out.println(sH20);
+		
+		
+		////////////////////////////////
+		
 		NodeList nList2 = doc.getElementsByTagName("IdTrasmittente");
 		Element eElement2 = (Element) nList2.item(0);
 		String s2 = eElement2.getElementsByTagName("IdCodice").item(0).getTextContent();

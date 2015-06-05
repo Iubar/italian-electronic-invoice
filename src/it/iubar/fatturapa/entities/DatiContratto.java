@@ -1,5 +1,5 @@
 package it.iubar.fatturapa.entities;
 
-public class DatiRiepilogo {
+public class DatiContratto {
 
 }
