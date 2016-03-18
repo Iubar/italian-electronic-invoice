@@ -1,4 +1,4 @@
-package it.iubar.fatturapa.json;
+package it.iubar.fatturapa;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -9,12 +9,11 @@ import java.net.URLConnection;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-public class JSONUtil {
+public class PagheUtil {
 	
 	public static final String DATA_TAG = "data";
 	public static final String CODE_TAG = "code";
@@ -48,7 +47,7 @@ public class JSONUtil {
 	
 	public static Document getXml(String url) throws Exception{
 		
-		String data = JSONUtil.get(url, XML_TAG);
+		String data = PagheUtil.get(url, XML_TAG);
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	    DocumentBuilder builder = factory.newDocumentBuilder();
