@@ -612,7 +612,7 @@ public class FatturaPaWrite
 			
 			if(isRitenuta()){
 				//Ritenuta elements
-				//controllare grafico(PDF) perchè presenta un segno strano 
+				//controllare grafico(PDF) perchÃ¨ presenta un segno strano 
 				Element elemRitenuta = doc.createElement("Ritenuta"); // questo elemento deve essere miglorato
 				elemRitenuta.appendChild(doc.createTextNode(datoCasPreviden.getRitenuta())); 
 				elemDatiCassPrevid.appendChild(elemRitenuta);				

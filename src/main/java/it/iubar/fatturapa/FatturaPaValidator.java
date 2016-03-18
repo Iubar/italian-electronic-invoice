@@ -31,7 +31,7 @@ public class FatturaPaValidator implements Runnable {
 	public static Document document;
 
 	private static final int option = 4; 	
-	// 1 == ERROR (Implementazione errata perchè mischia metodi per la validazione "interna" ed "esterna")
+	// 1 == ERROR (Implementazione errata perchÃ¨ mischia metodi per la validazione "interna" ed "esterna")
 	// 2 == OK (xsd da file)
 	// 3 == OK (xsd online)
 	// 4 == OK (uso Validator con xsd da file)
