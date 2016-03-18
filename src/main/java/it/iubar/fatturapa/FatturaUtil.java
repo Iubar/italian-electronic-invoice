@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-public class PagheUtil {
+public class FatturaUtil {
 	
 	public static final String DATA_TAG = "data";
 	public static final String CODE_TAG = "code";
@@ -36,21 +36,22 @@ public class PagheUtil {
         return response.toString();
 	}
 	
-	public static String get(String json, String s) throws Exception{
-		JSONObject jsonObject = new JSONObject(getHttpString(json));
-		if(s.equalsIgnoreCase(XML_TAG)){
-			JSONObject xml = jsonObject.getJSONObject(DATA_TAG);
-			return String.valueOf(xml.getString(XML_TAG));
-		}
-		return String.valueOf(jsonObject.get(s));
+	public static String getXmlString(String url) throws Exception{
+		JSONObject jsonObject = new JSONObject(getHttpString(url));
+		JSONObject data = jsonObject.getJSONObject(DATA_TAG);
+		return data.getString(XML_TAG);
 	}
 	
-	public static Document getXml(String url) throws Exception{
+	public static Document getXmlDocument(String url) throws Exception{
 		
-		String data = PagheUtil.get(url, XML_TAG);
+		String data = FatturaUtil.getXmlString(url);
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	    DocumentBuilder builder = factory.newDocumentBuilder();
 	   	return builder.parse(new InputSource(new StringReader(data)));
+	}
+	
+	public static void main(String[] args) throws Exception{
+		String url = "http://www.fatturatutto.it/app/api/test/fattura-esempio";
 	}
 }
