@@ -1,11 +1,21 @@
 package it.iubar.fatturapa;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.json.JSONObject;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+
+import it.iubar.fatturapa.json.JSONUtil;
 
 public class Main   
 {  
