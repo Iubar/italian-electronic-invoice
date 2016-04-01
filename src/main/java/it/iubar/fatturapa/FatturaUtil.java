@@ -1,6 +1,5 @@
 package it.iubar.fatturapa;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +26,7 @@ public class FatturaUtil {
 	public static final String RESPONSE_TAG = "response";
 	public static final String XML_TAG = "xml";
 	
-	public static String API_KEY;
+	private static String API_KEY = setApi();
 	
 	private static String getResponse(String url){
 		try {
@@ -61,8 +60,10 @@ public class FatturaUtil {
 	   	return builder.parse(new InputSource(new StringReader(data)));
 	}
 
-	public static String hMacCrypt(String msg, String keyString, String algo) {
+	public static String getSignature(String msg) {
 		String digest = null;
+		String algo = "HmacSHA256";
+		String keyString = FatturaUtil.getApi();
 	    try {
 	    	SecretKeySpec key = new SecretKeySpec((keyString).getBytes("UTF-8"), algo);
 	    	Mac mac = Mac.getInstance(algo);
@@ -84,16 +85,17 @@ public class FatturaUtil {
 	    return digest;
 	  }
 	
-	private static void getApi(){
+	private static String setApi(){
 		Properties prop = new Properties();
 		InputStream input = null;
 		
 		try{
 			input = new FileInputStream("src/main/resources/apikey.ini");
 			prop.load(input);
-			API_KEY = prop.getProperty("apikey");
+			return prop.getProperty("apikey");
 		} catch (IOException ex) {
 			ex.printStackTrace();
+			return null;
 		} finally {
 			if (input != null) {
 				try {
@@ -103,5 +105,9 @@ public class FatturaUtil {
 				}
 			}
 		}
+	}
+	
+	public static String getApi(){
+		return API_KEY;
 	}
 }
