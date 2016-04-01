@@ -75,7 +75,7 @@ public class FatturaUtil {
 			JSONObject js = new JSONObject();
 			
 			js.put("user", FatturaUtil.getUser());
-			js.put("time", getTimeStamp());
+			js.put("ts", getTimeStamp());
 			js.put("sig", FatturaUtil.getSignature());
 			
 			URL urlConnection = new URL(url);
