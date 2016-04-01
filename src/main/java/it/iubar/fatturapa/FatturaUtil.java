@@ -20,6 +20,25 @@ public class FatturaUtil {
 	public static final String RESPONSE_TAG = "response";
 	public static final String XML_TAG = "xml";
 	
+	private static String USER = "user";
+	private static String PASSWORD = "password";
+	
+	public static String getUser() {
+		return USER;
+	}
+
+	public static void setUser(String user) {
+		USER = user;
+	}
+
+	public static String getPassword() {
+		return PASSWORD;
+	}
+
+	public static void setPassword(String password) {
+		PASSWORD = password;
+	}
+
 	private static String getHttpString(String url) throws Exception{
 		URL website = new URL(url);
         URLConnection connection = website.openConnection();
@@ -49,9 +68,5 @@ public class FatturaUtil {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	    DocumentBuilder builder = factory.newDocumentBuilder();
 	   	return builder.parse(new InputSource(new StringReader(data)));
-	}
-	
-	public static void main(String[] args) throws Exception{
-		String url = "http://www.fatturatutto.it/app/api/test/fattura-esempio";
 	}
 }
