@@ -3,10 +3,7 @@ package it.iubar.fatturapa;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
@@ -14,7 +11,6 @@ import java.util.Properties;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
@@ -31,6 +27,11 @@ public class FatturaUtil {
 	public static final String CODE_TAG = "code";
 	public static final String RESPONSE_TAG = "response";
 	public static final String XML_TAG = "xml";
+	public static final String ERROR_TAG = "error";
+	
+	public static final String USER_PARAM = "user";
+	public static final String TIMESTAMP_PARAM = "ts";
+	public static final String SIGNATURE_PARAM = "hash";
 	
 	private static String API_KEY = setApi();
 	private static String USER = "user@user.it";
@@ -72,24 +73,12 @@ public class FatturaUtil {
 	private static String getResponse(String url){
 		try {
 			Client client = Client.create();
-			JSONObject js = new JSONObject();
-			
-			js.put("user", FatturaUtil.getUser());
-			js.put("ts", getTimeStamp());
-			js.put("sig", FatturaUtil.getSignature());
-			
-			URL urlConnection = new URL(url);
-			URLConnection connection = urlConnection.openConnection();
-			connection.setDoOutput(true);
-			connection.setRequestProperty("Content-Type", "application/json");
-			OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-			out.write(js.toString());
-			out.close();
-		
 			WebResource webResource = client.resource(url);
-			ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
+			
+			ClientResponse response = webResource.queryParam(USER_PARAM, getUser()).queryParam(TIMESTAMP_PARAM, getTimeStamp()).queryParam(SIGNATURE_PARAM, getSignature()).accept("application/json").get(ClientResponse.class);
+			
 			if (response.getStatus() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+				System.out.println("Code: " + response.getStatus());
 			}
 			return response.getEntity(String.class);
 		} catch (Exception e) {
@@ -99,11 +88,25 @@ public class FatturaUtil {
 	}
 	
 	@Deprecated
-	//Non utile dopo Debug
+	//Use getInfo Instead
 	public static String getXmlString(String url) throws Exception{
 		JSONObject jsonObject = new JSONObject(FatturaUtil.getResponse(url));
 		JSONObject data = jsonObject.getJSONObject(DATA_TAG);
 		return data.getString(XML_TAG);
+	}
+	
+	public static String getInfo(String url, String tag){
+		JSONObject jsonObject = new JSONObject(FatturaUtil.getResponse(url));
+		if(tag.equalsIgnoreCase(XML_TAG)|| tag.equalsIgnoreCase(ERROR_TAG)){
+			JSONObject data = jsonObject.getJSONObject(DATA_TAG);
+			return data.getString(tag);
+		}else if(tag.equalsIgnoreCase(CODE_TAG)){
+			return String.valueOf(jsonObject.getInt(CODE_TAG));
+		}else if(tag.equalsIgnoreCase(DATA_TAG)){
+			JSONObject data = jsonObject.getJSONObject(tag);
+			return data.toString();
+		}
+		return jsonObject.getString(tag);
 	}
 	
 	public static Document getXmlDocument(String url) throws Exception{
@@ -115,7 +118,7 @@ public class FatturaUtil {
 	   	return builder.parse(new InputSource(new StringReader(data)));
 	}
 	
-	public static String getPayLoad(){
+	private static String getPayLoad(){
 		return FatturaUtil.getUser() + getTimeStamp() + FatturaUtil.getApi();
 	}
 	
@@ -129,10 +132,10 @@ public class FatturaUtil {
 		String keyString = FatturaUtil.getApi();
 		try{
 			Mac sha256_HMAC = Mac.getInstance(algo);
-			SecretKeySpec secret_key = new SecretKeySpec(keyString.getBytes(), algo);
-			sha256_HMAC.init(secret_key);
-			String hash = Base64.encodeBase64String(sha256_HMAC.doFinal(payload.getBytes()));
-			return hash;
+		     SecretKeySpec secret_key = new SecretKeySpec(keyString.getBytes(), algo);
+		     sha256_HMAC.init(secret_key);
+		     String hash = Base64.encodeBase64String(sha256_HMAC.doFinal(payload.getBytes()));
+		     return hash;
 		}catch (Exception e){
 			System.out.println("Error");
 			return null;
