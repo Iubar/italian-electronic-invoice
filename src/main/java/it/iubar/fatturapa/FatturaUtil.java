@@ -139,7 +139,7 @@ public class FatturaUtil {
 		return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(new Date());
 	}
 
-	private static String getSignature() { //gets signature value
+	private static String getSignature() { //gets signature value with HmacSHA256
 		String payload = FatturaUtil.getPayLoad();
 		String algo = "HmacSHA256";
 		String keyString = FatturaUtil.getApi();
