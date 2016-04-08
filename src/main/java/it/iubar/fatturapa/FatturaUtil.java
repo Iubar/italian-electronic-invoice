@@ -1,19 +1,13 @@
 package it.iubar.fatturapa;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Properties;
-
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-
 import it.iubar.fatturapa.exceptions.AuthException;
+import org.apache.commons.codec.binary.Base64;
+import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -25,11 +19,10 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.apache.commons.codec.binary.Base64;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Properties;
 
 public class FatturaUtil {
 	
@@ -38,9 +31,9 @@ public class FatturaUtil {
 	public static final String RESPONSE_TAG = "response";
 	public static final String XML_TAG = "xml";
 	
-	public static final String USER_PARAM = "user";
-	public static final String TIMESTAMP_PARAM = "ts";
-	public static final String SIGNATURE_PARAM = "hash";
+	private static final String USER_PARAM = "user";
+	private static final String TIMESTAMP_PARAM = "ts";
+	private static final String SIGNATURE_PARAM = "hash";
 	
 	private static String API_KEY = setApi();
 	private static String USER = "user@user.it";
