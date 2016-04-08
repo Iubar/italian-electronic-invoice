@@ -36,7 +36,7 @@ public class FatturaUtil {
 	private static String API_KEY = setApi();
 	private static String USER = "user@user.it";
 	
-	public static String getUser() {
+	private static String getUser() {
 		return USER;
 	}
 
@@ -44,7 +44,7 @@ public class FatturaUtil {
 		USER = user;
 	}
 	
-	public static String getApi(){
+	private static String getApi(){
 		return API_KEY;
 	}
 	
@@ -126,7 +126,7 @@ public class FatturaUtil {
 		return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(new Date());
 	}
 
-	public static String getSignature() {
+	private static String getSignature() {
 		String payload = FatturaUtil.getPayLoad();
 		String algo = "HmacSHA256";
 		String keyString = FatturaUtil.getApi();
