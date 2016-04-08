@@ -1,5 +1,6 @@
 package it.iubar.fatturapa;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,10 +12,19 @@ import java.util.Properties;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+
+import it.iubar.fatturapa.exceptions.AuthException;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -27,7 +37,6 @@ public class FatturaUtil {
 	public static final String CODE_TAG = "code";
 	public static final String RESPONSE_TAG = "response";
 	public static final String XML_TAG = "xml";
-	public static final String ERROR_TAG = "error";
 	
 	public static final String USER_PARAM = "user";
 	public static final String TIMESTAMP_PARAM = "ts";
@@ -35,6 +44,7 @@ public class FatturaUtil {
 	
 	private static String API_KEY = setApi();
 	private static String USER = "user@user.it";
+	private static String URL_DEST = "http://localhost";
 	
 	private static String getUser() {
 		return USER;
@@ -48,7 +58,15 @@ public class FatturaUtil {
 		return API_KEY;
 	}
 	
-	private static String setApi(){
+	private static String getUrl(){
+		return URL_DEST;
+	}
+	
+	public static void setUrl(String url){
+		URL_DEST = url;
+	}
+	
+	private static String setApi(){ // this will simply gets api key from file ini
 		Properties prop = new Properties();
 		InputStream input = null;
 		
@@ -70,34 +88,29 @@ public class FatturaUtil {
 		}
 	}
 
-	private static String getResponse(String url){
-		try {
-			Client client = Client.create();
-			WebResource webResource = client.resource(url);
-			
-			ClientResponse response = webResource.queryParam(USER_PARAM, getUser()).queryParam(TIMESTAMP_PARAM, getTimeStamp()).queryParam(SIGNATURE_PARAM, getSignature()).accept("application/json").get(ClientResponse.class);
-			
-			if (response.getStatus() != 200) {
-				System.out.println("Code: " + response.getStatus());
-			}
-			return response.getEntity(String.class);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+	private static String getResponse() throws AuthException{
+		//Initialization jersey client
+		Client client = Client.create();
+		//set destination url
+		WebResource webResource = client.resource(getUrl());		
+				
+		//execution query
+		ClientResponse response = webResource.queryParam(USER_PARAM, getUser()).queryParam(TIMESTAMP_PARAM, getTimeStamp()).queryParam(SIGNATURE_PARAM, getSignature()).accept("application/json").get(ClientResponse.class);
+				
+		//if code is not 200, throw exception
+		int stat = response.getStatus();
+		if (stat != 200) {
+			throw new AuthException(new JSONObject(response.getEntity(String.class)).getString(RESPONSE_TAG), stat);
 		}
+		return response.getEntity(String.class); //return string
 	}
 	
-	@Deprecated
-	//Use getInfo Instead
-	public static String getXmlString(String url) throws Exception{
-		JSONObject jsonObject = new JSONObject(FatturaUtil.getResponse(url));
-		JSONObject data = jsonObject.getJSONObject(DATA_TAG);
-		return data.getString(XML_TAG);
-	}
-	
-	public static String getInfo(String url, String tag){
-		JSONObject jsonObject = new JSONObject(FatturaUtil.getResponse(url));
-		if(tag.equalsIgnoreCase(XML_TAG)|| tag.equalsIgnoreCase(ERROR_TAG)){
+	public static String getInfo(String tag) throws AuthException{
+		//getting string from previous method
+		JSONObject jsonObject = new JSONObject(FatturaUtil.getResponse());
+		
+		//if I need nested tags or I get parameters that are not strings, this will solve everything
+		if(tag.equalsIgnoreCase(XML_TAG)){
 			JSONObject data = jsonObject.getJSONObject(DATA_TAG);
 			return data.getString(tag);
 		}else if(tag.equalsIgnoreCase(CODE_TAG)){
@@ -109,24 +122,24 @@ public class FatturaUtil {
 		return jsonObject.getString(tag);
 	}
 	
-	public static Document getXmlDocument(String url) throws Exception{
+	public static Document getXmlDocument() throws Exception{ //gets xml document formatted and clean
 		
-		String data = FatturaUtil.getResponse(url);
+		String data = FatturaUtil.getInfo(XML_TAG);
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	    DocumentBuilder builder = factory.newDocumentBuilder();
 	   	return builder.parse(new InputSource(new StringReader(data)));
 	}
 	
-	private static String getPayLoad(){
-		return FatturaUtil.getUser() + getTimeStamp() + FatturaUtil.getApi();
+	private static String getPayLoad(){ //generation of concatenated string
+		return FatturaUtil.getUrl() + FatturaUtil.getUser() + getTimeStamp() + FatturaUtil.getApi();
 	}
 	
-	private static String getTimeStamp(){
+	private static String getTimeStamp(){ //get correct timestamp (sever pattern)
 		return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(new Date());
 	}
 
-	private static String getSignature() {
+	private static String getSignature() { //gets signature value
 		String payload = FatturaUtil.getPayLoad();
 		String algo = "HmacSHA256";
 		String keyString = FatturaUtil.getApi();
@@ -137,8 +150,16 @@ public class FatturaUtil {
 		     String hash = Base64.encodeBase64String(sha256_HMAC.doFinal(payload.getBytes()));
 		     return hash;
 		}catch (Exception e){
-			System.out.println("Error");
 			return null;
 		}
+	}
+	
+	public static void saveFile(String savepath) throws Exception{ //save xml got from data JSON string
+		Document d = getXmlDocument();
+		Transformer transformer = TransformerFactory.newInstance().newTransformer();
+		Result output = new StreamResult(new File(savepath));
+		Source input = new DOMSource(d);
+
+		transformer.transform(input, output);
 	}
 }
