@@ -1,19 +1,15 @@
 package it.iubar.fatturapa;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
+import it.iubar.fatturapa.entities.DatiTrasmissione;
+import it.iubar.fatturapa.entities.IdTrasmittente;
 import org.apache.commons.lang3.time.StopWatch;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import it.iubar.fatturapa.entities.*;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 
 public class FatturaPaParser implements Runnable {
 
