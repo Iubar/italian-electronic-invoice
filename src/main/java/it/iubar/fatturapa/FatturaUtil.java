@@ -14,9 +14,16 @@ import org.xml.sax.SAXException;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -79,7 +86,7 @@ public class FatturaUtil {
 		JSONObject jsonObject = new JSONObject(callToHost(DEST_URL + GET_FATTURA + numeroFattura));
 		JSONObject data = jsonObject.getJSONObject(DATA_TAG);
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
+		factory.setNamespaceAware(true);
 		Document document = null;
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
@@ -87,11 +94,8 @@ public class FatturaUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		try {
-			isValid(document);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
+		isValid(document);
 		return document;
 	}
 
@@ -135,8 +139,34 @@ public class FatturaUtil {
 		}
 	}
 
-	public static void isValid(Document document) throws ParserConfigurationException, IOException, SAXException {
-		//TODO: Implement this method
+	public static void isValid(Document document) throws XmlNotvalid {
+		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+		Source source = new StreamSource(XSD_SCHEMA);
+		Schema schema = null;
+		try {
+			schema = schemaFactory.newSchema(source);
+		} catch (SAXException e) {
+			e.printStackTrace();
+		}
+
+		Validator validator = schema.newValidator();
+		try {
+			validator.validate(new DOMSource(document));
+		} catch (SAXException e) {
+			throw new XmlNotvalid(e.getLocalizedMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
+
+	public static void saveFile(String savePath, Document d) throws TransformerException {
+		Transformer transformer = TransformerFactory.newInstance().newTransformer();
+		Result output = new StreamResult(new File(savePath));
+		Source input = new DOMSource(d);
+
+		transformer.transform(input, output);
+	}
 }
