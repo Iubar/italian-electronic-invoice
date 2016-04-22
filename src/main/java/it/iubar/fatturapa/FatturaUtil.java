@@ -4,21 +4,19 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import it.iubar.fatturapa.exceptions.AuthException;
+import it.iubar.fatturapa.exceptions.ParseNonriuscito;
+import it.iubar.fatturapa.exceptions.XmlNotvalid;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,30 +33,24 @@ public class FatturaUtil {
 	private static final String TIMESTAMP_PARAM = "ts";
 	private static final String SIGNATURE_PARAM = "hash";
 	
-	private static String API_KEY = setApi();
-	private static String USER = "user@user.it";
-	private static String URL_DEST = "http://localhost";
+	private static final String API_KEY = setApi();
+	private static String user = "user@user.it";
 
-	private static String XSD_SCHEMA = "http://www.fatturatutto.it/app/public/resources/xml/1.1/fatturapa_v1.1.xsd";
+	private static final String DEST_URL = "http://www.fatturatutto.it/app/api/test/";
+	private static final String XSD_SCHEMA = "http://www.fatturatutto.it/app/public/resources/xml/1.1/fatturapa_v1.1.xsd";
+
+	private static final String GET_FATTURA = "fattura-esempio/";
 	
 	private static String getUser() {
-		return USER;
+		return user;
 	}
 
-	public static void setUser(String user) {
-		USER = user;
+	public static void setUser(String u) {
+		u = user;
 	}
 	
 	private static String getApi(){
 		return API_KEY;
-	}
-	
-	private static String getUrl(){
-		return URL_DEST;
-	}
-	
-	public static void setUrl(String url){
-		URL_DEST = url;
 	}
 	
 	private static String setApi(){ // this will simply gets api key from file ini
@@ -83,15 +75,35 @@ public class FatturaUtil {
 		}
 	}
 
-	private static String getResponse() throws AuthException{
+	public static Document getFattura(String numeroFattura) throws AuthException, ParseNonriuscito, XmlNotvalid {
+		JSONObject jsonObject = new JSONObject(callToHost(DEST_URL + GET_FATTURA + numeroFattura));
+		JSONObject data = jsonObject.getJSONObject(DATA_TAG);
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+		Document document = null;
+		try {
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			document = builder.parse(new InputSource(new StringReader(data.getString(XML_TAG))));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			isValid(document);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return document;
+	}
+
+	private static String callToHost(String url) throws AuthException {
 		//Initialization jersey client
 		Client client = Client.create();
 		//set destination url
-		WebResource webResource = client.resource(getUrl());		
-				
+		WebResource webResource = client.resource(url);
+
 		//execution query
-		ClientResponse response = webResource.queryParam(USER_PARAM, getUser()).queryParam(TIMESTAMP_PARAM, getTimeStamp()).queryParam(SIGNATURE_PARAM, getSignature()).accept("application/json").get(ClientResponse.class);
-				
+		ClientResponse response = webResource.queryParam(USER_PARAM, getUser()).queryParam(TIMESTAMP_PARAM, getTimeStamp()).queryParam(SIGNATURE_PARAM, getSignature(url)).accept("application/json").get(ClientResponse.class);
+
 		//if code is not 200, throw exception
 		int stat = response.getStatus();
 		if (stat != 200) {
@@ -100,42 +112,16 @@ public class FatturaUtil {
 		return response.getEntity(String.class); //return string
 	}
 	
-	public static String getInfo(String tag) throws AuthException{
-		//getting string from previous method
-		JSONObject jsonObject = new JSONObject(FatturaUtil.getResponse());
-		
-		//if I need nested tags or I get parameters that are not strings, this will solve everything
-		if(tag.equalsIgnoreCase(XML_TAG)){
-			JSONObject data = jsonObject.getJSONObject(DATA_TAG);
-			return data.getString(tag);
-		}else if(tag.equalsIgnoreCase(CODE_TAG)){
-			return String.valueOf(jsonObject.getInt(CODE_TAG));
-		}else if(tag.equalsIgnoreCase(DATA_TAG)){
-			JSONObject data = jsonObject.getJSONObject(tag);
-			return data.toString();
-		}
-		return jsonObject.getString(tag);
-	}
-	
-	public static Document getXmlDocument() throws Exception{ //gets xml document formatted and clean
-		
-		String data = FatturaUtil.getInfo(XML_TAG);
-		
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-	    DocumentBuilder builder = factory.newDocumentBuilder();
-	   	return builder.parse(new InputSource(new StringReader(data)));
-	}
-	
 	private static String getPayLoad(){ //generation of concatenated string
-		return FatturaUtil.getUrl() + FatturaUtil.getUser() + getTimeStamp() + FatturaUtil.getApi();
+		return FatturaUtil.getUser() + getTimeStamp() + FatturaUtil.getApi();
 	}
 	
 	private static String getTimeStamp(){ //get correct timestamp (sever pattern)
 		return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(new Date());
 	}
 
-	private static String getSignature() { //gets signature value with HmacSHA256
-		String payload = FatturaUtil.getPayLoad();
+	private static String getSignature(String url) { //gets signature value with HmacSHA256
+		String payload = url + FatturaUtil.getPayLoad();
 		String algo = "HmacSHA256";
 		String keyString = FatturaUtil.getApi();
 		try{
@@ -149,12 +135,8 @@ public class FatturaUtil {
 		}
 	}
 
-	public static void saveFile(String savepath) throws Exception{ //save xml got from data JSON string
-		Document d = getXmlDocument();
-		Transformer transformer = TransformerFactory.newInstance().newTransformer();
-		Result output = new StreamResult(new File(savepath));
-		Source input = new DOMSource(d);
-
-		transformer.transform(input, output);
+	public static void isValid(Document document) throws ParserConfigurationException, IOException, SAXException {
+		//TODO: Implement this method
 	}
+
 }
