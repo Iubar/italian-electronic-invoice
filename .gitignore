@@ -2,3 +2,5 @@
 /target/
 /.idea/
 /iubar_invoice.iml
+.project
+.classpath
