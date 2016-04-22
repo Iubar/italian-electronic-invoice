@@ -1,9 +1,9 @@
 package it.iubar.fatturapa;
 
-import java.io.IOException;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 
 public class Main   
 {  
@@ -23,7 +23,7 @@ public class Main
 //		System.out.println("This is currently running on the main thread, " +  
 //				"the id is: " + Thread.currentThread().getId());
 
-		xmlPath = System.getProperty("user.home") + "/workspace/italian-electronic-invoice/src/it/iubar/fatturapa/xml";
+		xmlPath = "src/main/resources";
 		xmlFileName = xmlPath + "/examples/IT01234567890_11001.xml";			
 		schemaFileName = xmlPath + "/fatturapa_v1.1.xsd";
 		xmlFileNameOut = xmlPath + "/prova.xml";
