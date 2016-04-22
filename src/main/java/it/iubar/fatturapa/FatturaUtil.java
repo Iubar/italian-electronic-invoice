@@ -38,6 +38,8 @@ public class FatturaUtil {
 	private static String API_KEY = setApi();
 	private static String USER = "user@user.it";
 	private static String URL_DEST = "http://localhost";
+
+	private static String XSD_SCHEMA = "http://www.fatturatutto.it/app/public/resources/xml/1.1/fatturapa_v1.1.xsd";
 	
 	private static String getUser() {
 		return USER;
@@ -138,15 +140,15 @@ public class FatturaUtil {
 		String keyString = FatturaUtil.getApi();
 		try{
 			Mac sha256_HMAC = Mac.getInstance(algo);
-		     SecretKeySpec secret_key = new SecretKeySpec(keyString.getBytes(), algo);
-		     sha256_HMAC.init(secret_key);
-		     String hash = Base64.encodeBase64String(sha256_HMAC.doFinal(payload.getBytes()));
-		     return hash;
+			SecretKeySpec secret_key = new SecretKeySpec(keyString.getBytes(), algo);
+			sha256_HMAC.init(secret_key);
+			String hash = Base64.encodeBase64String(sha256_HMAC.doFinal(payload.getBytes()));
+			return hash;
 		}catch (Exception e){
 			return null;
 		}
 	}
-	
+
 	public static void saveFile(String savepath) throws Exception{ //save xml got from data JSON string
 		Document d = getXmlDocument();
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
