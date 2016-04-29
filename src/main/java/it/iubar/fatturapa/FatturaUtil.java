@@ -61,7 +61,7 @@ public class FatturaUtil {
 	private static final String DEST_URL = "http://www.fatturatutto.it/app/api/test/";
 	private static String XSD_SCHEMA = "http://www.fatturatutto.it/app/public/resources/xml/1.1/fatturapa_v1.1.xsd";
 	private static final String GET_FATTURA = "fattura-esempio/";
-	
+
 	private static String getUser() {
 		return user;
 	}
@@ -188,12 +188,23 @@ public class FatturaUtil {
 		Validator validator = schema.newValidator();
 		try {
 			validator.validate(new DOMSource(document));
-		} catch (SAXException e) {
+		} catch (Exception e) {
 			throw new XmlNotvalid(e.getLocalizedMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 
+	}
+
+	public static void xsltExecute(String xml, String xslt, String output){
+		Source xmlInput = new StreamSource(new File(xml));
+		Source xsl = new StreamSource(new File(xslt));
+		Result xmlOutput = new StreamResult(new File(output));
+
+		try {
+			Transformer transformer = TransformerFactory.newInstance().newTransformer(xsl);
+			transformer.transform(xmlInput, xmlOutput);
+		} catch (TransformerException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
