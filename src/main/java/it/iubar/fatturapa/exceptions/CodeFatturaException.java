@@ -1,4 +1,4 @@
-package it.iubar.fatturapa;
+package it.iubar.fatturapa.exceptions;
 
 public class CodeFatturaException extends Exception {
 
