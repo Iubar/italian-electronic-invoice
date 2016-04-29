@@ -41,6 +41,9 @@ public class FatturaUtil {
 	private static final String SIGNATURE_PARAM = "hash";
 	
 	private static final String API_KEY = setApi();
+	private static final String API_KEY_DIR = "src/main/resources/apikey.ini";
+	private static final String API_KEY_VALUE = "apikey";
+
 	private static String user = "user@user.it";
 
 	private static final String DEST_URL = "http://www.fatturatutto.it/app/api/test/";
@@ -65,9 +68,9 @@ public class FatturaUtil {
 		InputStream input = null;
 		
 		try{
-			input = new FileInputStream("src/main/resources/apikey.ini");
+			input = new FileInputStream(API_KEY_DIR);
 			prop.load(input);
-			return prop.getProperty("apikey");
+			return prop.getProperty(API_KEY_VALUE);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			return null;
