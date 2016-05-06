@@ -185,8 +185,8 @@ public class FatturaUtil {
 			e.printStackTrace();
 		}
 
-		Validator validator = schema.newValidator();
 		try {
+			Validator validator = schema.newValidator();
 			validator.validate(new DOMSource(document));
 		} catch (Exception e) {
 			throw new XmlNotvalid(e.getLocalizedMessage());
