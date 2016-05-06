@@ -174,22 +174,24 @@ public class FatturaUtil {
 		}
 	}
 
-	private static void isValid(Document document) throws XmlNotvalid {
+	private static boolean isValid(Document document){
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
 		Source source = new StreamSource(XSD_SCHEMA);
-		Schema schema = null;
+		Schema schema;
 		try {
 			schema = schemaFactory.newSchema(source);
 		} catch (SAXException e) {
 			e.printStackTrace();
+			return false;
 		}
 
 		try {
 			Validator validator = schema.newValidator();
 			validator.validate(new DOMSource(document));
+			return true;
 		} catch (Exception e) {
-			throw new XmlNotvalid(e.getLocalizedMessage());
+			return false;
 		}
 
 	}
