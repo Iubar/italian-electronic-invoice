@@ -167,8 +167,7 @@ public class FatturaUtil {
 			Mac sha256_HMAC = Mac.getInstance(algo);
 			SecretKeySpec secret_key = new SecretKeySpec(keyString.getBytes(), algo);
 			sha256_HMAC.init(secret_key);
-			String hash = Base64.encodeBase64String(sha256_HMAC.doFinal(payload.getBytes()));
-			return hash;
+			return Base64.encodeBase64String(sha256_HMAC.doFinal(payload.getBytes()));
 		}catch (Exception e){
 			return null;
 		}
@@ -222,7 +221,7 @@ public class FatturaUtil {
      */
 	public static void saveFile(String savePath, String numeroFattura) throws TransformerException, AuthException, XmlNotvalid, ParseNonriuscito {
 
-		Document d = d = FatturaUtil.getFattura(numeroFattura);
+		Document d = FatturaUtil.getFattura(numeroFattura);
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		Result output = new StreamResult(new File(savePath));
 		Source input = new DOMSource(d);
