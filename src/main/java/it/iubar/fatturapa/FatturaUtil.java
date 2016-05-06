@@ -194,15 +194,15 @@ public class FatturaUtil {
 
 	}
 
-	public static void xsltExecute(String xml, String xslt, String output){
-		Source xmlInput = new StreamSource(new File(xml));
-		Source xsl = new StreamSource(new File(xslt));
+	public static void xsltExecute(File xml, File xslt, String output){
+		Source xmlInput = new StreamSource(xml);
+		Source xslInput = new StreamSource(xslt);
 		Result xmlOutput = new StreamResult(new File(output));
 
-		try {
-			Transformer transformer = TransformerFactory.newInstance().newTransformer(xsl);
+		try{
+			Transformer transformer = TransformerFactory.newInstance().newTransformer(xslInput);
 			transformer.transform(xmlInput, xmlOutput);
-		} catch (TransformerException e) {
+		} catch (TransformerException e){
 			e.printStackTrace();
 		}
 	}
